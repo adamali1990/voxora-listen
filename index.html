@@ -1,17 +1,46 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Voxora - Live Audio Stream</title>
+  <meta charset="UTF-8">
+  <title>Start Voice Broadcast</title>
+  <style>
+    body {
+      background-color: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    button {
+      font-size: 20px;
+      padding: 15px 30px;
+      border: none;
+      background: #1e90ff;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+  </style>
 </head>
-<body style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; background-color: #f8f8f8;">
+<body>
+  <h1>Voxora Studio</h1>
+  <p>انقر لبدء البث الصوتي المباشر</p>
+  <button onclick="start()">ابدأ البث</button>
 
-  <h2>استماع مباشر للبث الصوتي</h2>
-  <audio controls autoplay>
-    <source src="https://voxora-voice-check11.onrender.com/" type="audio/webm">
-    المتصفح لا يدعم تشغيل الصوت المباشر.
-  </audio>
-
+  <script>
+    async function start() {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+      mediaRecorder.start(1000);
+      mediaRecorder.ondataavailable = e => {
+        fetch('/stream', { method: 'POST', body: e.data });
+      };
+    }
+  </script>
 </body>
 </html>
